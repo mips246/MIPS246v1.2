@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <display-name>MIPS246</display-name>
+  <servlet>
+    <servlet-name>LoginServlet</servlet-name>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <description>This is the description of my J2EE component</description>
+    <servlet-class>servlet.LoginServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>UploadServlet</servlet-name>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <description>This is the description of my J2EE component</description>
+    <servlet-class>servlet.UploadServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>LogoutServlet</servlet-name>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <description>This is the description of my J2EE component</description>
+    <servlet-class>servlet.LogoutServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AddCourseServlet</servlet-name>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <description>This is the description of my J2EE component</description>
+    <servlet-class>servlet.AddCourseServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>LoginServletNew</servlet-name>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <description>This is the description of my J2EE component</description>
+    <servlet-class>servlet.LoginServletNew</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AdminCourseServlet</servlet-name>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <description>This is the description of my J2EE component</description>
+    <servlet-class>servlet.AdminCourseServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AdminTeacherServlet</servlet-name>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <description>This is the description of my J2EE component</description>
+    <servlet-class>servlet.AdminTeacherServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AdminStudentServlet</servlet-name>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <description>This is the description of my J2EE component</description>
+    <servlet-class>servlet.AdminStudentServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>AdminTeacherCourseServlet</servlet-name>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <description>This is the description of my J2EE component</description>
+    <servlet-class>servlet.AdminTeacherCourseServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>TeacherServlet</servlet-name>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <description>This is the description of my J2EE component</description>
+    <servlet-class>servlet.TeacherServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>StudentServlet</servlet-name>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <description>This is the description of my J2EE component</description>
+    <servlet-class>servlet.StudentServlet</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>DownloadServlet</servlet-name>
+    <display-name>This is the display name of my J2EE component</display-name>
+    <description>This is the description of my J2EE component</description>
+    <servlet-class>servlet.DownloadServlet</servlet-class>
+  </servlet>
+
+
+
+
+
+
+
+
+
+
+
+  <servlet-mapping>
+    <servlet-name>LoginServlet</servlet-name>
+    <url-pattern>/LoginServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>UploadServlet</servlet-name>
+    <url-pattern>/UploadServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>LogoutServlet</servlet-name>
+    <url-pattern>/LogoutServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AddCourseServlet</servlet-name>
+    <url-pattern>/AddCourseServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>LoginServletNew</servlet-name>
+    <url-pattern>/LoginServletNew</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdminCourseServlet</servlet-name>
+    <url-pattern>/AdminCourseServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdminTeacherServlet</servlet-name>
+    <url-pattern>/AdminTeacherServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdminStudentServlet</servlet-name>
+    <url-pattern>/AdminStudentServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>AdminTeacherCourseServlet</servlet-name>
+    <url-pattern>/AdminTeacherCourseServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>TeacherServlet</servlet-name>
+    <url-pattern>/TeacherServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>StudentServlet</servlet-name>
+    <url-pattern>/StudentServlet</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>DownloadServlet</servlet-name>
+    <url-pattern>/DownloadServlet</url-pattern>
+  </servlet-mapping>
+  
+  <filter>
+	<filter-name>LoginFilter</filter-name>
+		<filter-class>filter.LoginFilter</filter-class>
+  </filter>
+  <filter-mapping>
+	<filter-name>LoginFilter</filter-name>
+	<url-pattern>/teacher/*</url-pattern>
+	<url-pattern>/student/*</url-pattern>
+	<url-pattern>/admin/*</url-pattern>		
+	<url-pattern>/file1.jsp</url-pattern>
+	<url-pattern>/file2.jsp</url-pattern>
+	<url-pattern>/file3.jsp</url-pattern>
+	<url-pattern>/homework1.jsp</url-pattern>
+	<url-pattern>/homework2.jsp</url-pattern>
+	<url-pattern>/homework3.jsp</url-pattern>
+	<url-pattern>/main.jsp</url-pattern>
+	<url-pattern>/study_menu.jsp</url-pattern>
+	<url-pattern>/study1_1.jsp</url-pattern>
+	<url-pattern>/study1_2.jsp</url-pattern>
+	<url-pattern>/study2_1.jsp</url-pattern>
+	<url-pattern>/study2_2.jsp</url-pattern>
+	<url-pattern>/study3_1.jsp</url-pattern>
+	<url-pattern>/study3_2.jsp</url-pattern>
+  </filter-mapping>
+
+  <filter>
+	<filter-name>StudentRoleFilter</filter-name>
+		<filter-class>filter.StudentRoleFilter</filter-class>
+  </filter>
+  <filter-mapping>
+	<filter-name>StudentRoleFilter</filter-name>
+	<url-pattern>/teacher/*</url-pattern>
+	<url-pattern>/admin/*</url-pattern>
+  </filter-mapping>
+  
+  <filter>
+	<filter-name>TeacherRoleFilter</filter-name>
+		<filter-class>filter.TeacherRoleFilter</filter-class>
+  </filter>
+  <filter-mapping>
+	<filter-name>TeacherRoleFilter</filter-name>
+	<url-pattern>/student/*</url-pattern>
+	<url-pattern>/admin/*</url-pattern>
+  </filter-mapping>
+  
+  <filter>
+	<filter-name>AdminRoleFilter</filter-name>
+		<filter-class>filter.AdminRoleFilter</filter-class>
+  </filter>
+  <filter-mapping>
+	<filter-name>AdminRoleFilter</filter-name>
+	<url-pattern>/student/*</url-pattern>
+	<url-pattern>/teacher/*</url-pattern>
+  </filter-mapping>
+	
+  
+  <welcome-file-list>
+  	<welcome-file>index.jsp</welcome-file>
+    <welcome-file>login.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

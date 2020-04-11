@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="laydate-v1.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/WebRoot/js/plugins/layer/laydate-v1.1.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
