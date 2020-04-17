@@ -130,5 +130,50 @@ public class FileDAO extends BaseDAO{
 		return true;
 	}
 	*/
-	
+
+	public static JSONArray teacherGetFile(MyFile file) throws SQLException, JSONException {
+		openConnection();
+
+		String sql="select * from file where courseid = ? and teacherid = ? and studentid is null;";
+		pstmt=getPStatement(sql);
+		pstmt.setString(1, file.getCourseid());
+		pstmt.setString(2, file.getTeacherid());
+		ResultSet result=pstmt.executeQuery();
+
+		JSONArray resultlist =new JSONArray();
+		while(result.next()) {
+			JSONObject obj =new JSONObject();
+
+			obj.append("fileno", 			result.getInt("file_no"));
+			obj.append("fileurl", 			result.getString("file_url"));
+			obj.append("filename", 		result.getString("file_name"));
+			obj.append("coursesection", 	result.getInt("course_section"));
+			obj.append("filetype", 			result.getInt("file_type"));
+			obj.append("createtime", 		result.getString("create_time"));
+
+			System.out.println("< Get "+ result.getString("file_url") + " >");
+			resultlist.put(obj);
+		}
+		closeConnect();
+		return resultlist;
+	}
+
+	public static boolean delete(int fileno){
+		openConnection();
+
+		String sql="delete from file where file_no = ?;";
+		pstmt=getPStatement(sql);
+		try {
+			pstmt.setInt(1, fileno);
+			pstmt.executeUpdate();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			closeConnect();
+		}
+
+		return true;
+	}
 }

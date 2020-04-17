@@ -203,6 +203,22 @@ public class TeacherServlet extends HttpServlet {
 			}
 			out.println(jsonArray);
 		}
+		else if("selectTeacherFileWithCourseid".equals(method)) {
+			System.out.println("< Teacher Get File List With Courseid >");
+			String courseid = request.getParameter("courseid");
+			String teacherid = request.getParameter("teacherid");
+
+			MyFile file=new MyFile();
+			file.setCourseid(courseid);
+			file.setTeacherid(teacherid);
+
+			try{
+				jsonArray = FileDAO.teacherGetFile(file);
+			}catch(SQLException|JSONException e) {
+				e.printStackTrace();
+			}
+			out.println(jsonArray);
+		}
 		out.close();
 	}
 }

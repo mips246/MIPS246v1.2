@@ -67,6 +67,12 @@
 		                		</li>
 		                	</ul>
 		                </li>
+						<li>
+							<a class="J_menuItem" href="teacher_file_manage.jsp">
+								<i class="fa fa-folder-open"></i>
+								<span class="nav-label">文件管理</span>
+							</a>
+						</li>
 					</ul>
 				</div>
 			</nav>
