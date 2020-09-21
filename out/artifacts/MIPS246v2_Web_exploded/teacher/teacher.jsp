@@ -73,6 +73,12 @@
 								<span class="nav-label">文件管理</span>
 							</a>
 						</li>
+						<li>
+							<a class="J_menuItem" href="dupCheck.jsp">
+								<i class="fa fa-files-o"></i>
+								<span class="nav-label">查重系统</span>
+							</a>
+						</li>
 					</ul>
 				</div>
 			</nav>
