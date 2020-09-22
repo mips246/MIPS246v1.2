@@ -32,15 +32,64 @@
                     dataType:"json",
                     success:function(data){
                         $("#courseList").html("");
-                        $.each(data, function (index){
-                            var courseid = data[index].courseid;
-                            var coursename = data[index].coursename;
-                            tt = "<option value='"+courseid+"'>"+ courseid + " " + coursename+"</option>";
-                            $("#courseList").append(tt);
-                        });
-                        loadStudentTable(teacherid,data[0].courseid);
+                        if (data == ''){
+                            alert("未查询到您负责的课程！");
+                            $("#dupCheck").attr("disabled","disabled");
+                        }
+                        else {
+                            $("#dupCheck").removeAttrs("disabled");
+                            $.each(data, function (index){
+                                var courseid = data[index].courseid;
+                                var coursename = data[index].coursename;
+                                tt = "<option value='"+courseid+"'>"+ courseid + " " + coursename+"</option>";
+                                $("#courseList").append(tt);
+                            });
+                            loadCourseSection(teacherid,data[0].courseid);
+                            // loadStudentTable(teacherid,data[0].courseid);
+                        }
+
                     }
                 });
+            }
+        </script>
+
+        <script type="text/javascript">
+            function loadCourseSection(teacherid,courseid){
+                $.ajax({
+                    url:"/MIPS246/TeacherServlet",
+                    type:"POST",
+                    data:{
+                        method:"getCourseSection",
+                        teacherid:teacherid,
+                        courseid:courseid
+                    },
+                    dataType:"json",
+                    success:function(data){
+                        dealCourseSection(data);
+                    }
+                });
+            }
+        </script>
+
+        <script type="text/javascript">
+            function dealCourseSection(data){
+                $("#courseSection").html("");
+                if (data == ''){
+                    $("#courseSection").attr("disabled","disabled");
+                    $("#courseSection").attr("style","background-color: #EEEEEE;");
+                    $("#dupCheck").attr("disabled","disabled");
+                }
+                else {
+                    $("#courseSection").removeAttrs("disabled");
+                    $("#courseSection").removeAttrs("style");
+                    $("#dupCheck").removeAttrs("disabled");
+                    $.each(data, function(index) {
+                        var section = data[index].section;
+
+                        tt = "<option value='"+section+"'>第 "+ section + " 节</option>";
+                        $("#courseSection").append(tt);
+                    });
+                }
             }
         </script>
 
@@ -66,6 +115,7 @@
             function dealStudentData(data){
                 $("#studentsList1").html("");
                 $("#studentsList2").html("");
+
                 $.each(data, function(index) {
                     var stuid = data[index].stuid;
                     var studentname = data[index].name;
@@ -110,22 +160,23 @@
                 var teacherid = '<%=session.getAttribute("userid")%>';
                 $("#courseList").change(function(){
                     if($("#courseList").val()!=null){
-                        loadStudentTable(teacherid,$("#courseList").val());
+                        // loadStudentTable(teacherid,$("#courseList").val());
+                        loadCourseSection(teacherid,$("#courseList").val());
                     }
                 });
 
                 $("#dupCheck").on("click",function(){
                     var courseId = $("#courseList").val();
-                    var courseSection = $("input[name='coursesection']").val();
-                    var checkType = $("input[name='checkType']:checked").val();
-                    var studentId1 = $("#studentsList1").val();
-                    var studentId2 = $("#studentsList2").val();
-                    if(checkType === "one2one" && studentId1 === studentId2){
-                        alert("请选择两位不同学生查重！");
-                    }
-                    else{
-                        alert("here!")
-                    }
+                    var courseSection = $("#courseSection").val();
+                    //var checkType = $("input[name='checkType']:checked").val();
+                    // var studentId1 = $("#studentsList1").val();
+                    // var studentId2 = $("#studentsList2").val();
+                    // if(checkType === "one2one" && studentId1 === studentId2){
+                    //     alert("请选择两位不同学生查重！");
+                    // }
+                    // else{
+                    //     alert("here!")
+                    // }
                 });
             });
         </script>
@@ -163,44 +214,46 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label class="col-sm-4 control-label">请输入课程小节:</label>
-                                    <div class="col-sm-2">
-                                        <input class="form-control" type="text" name="coursesection"/>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">请选择查重方式:</label>
+                                    <label class="col-sm-4 control-label">请选择课程小节:</label>
                                     <div class="col-sm-6">
-                                        <label class="radio-inline">
-                                            <input type="radio" name="checkType" value="all2all"/>全对全查重
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="checkType" value="one2all"/>一对全查重
-                                        </label>
-                                        <label class="radio-inline">
-                                            <input type="radio" name="checkType" value="one2one" checked="checked"/>一对一查重
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">请选择第一位待查重学生:</label>
-                                    <div class="col-sm-6">
-                                        <select id="studentsList1" name="studentId1" class="form-control inline">
-                                            <option value="-1">选择学生</option>
+                                        <select id="courseSection" name="courseSection" class="form-control inline">
+                                            <option value="-1">选择课程小节</option>
                                         </select>
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label class="col-sm-4 control-label">请选择第二位待查重学生:</label>
-                                    <div class="col-sm-6">
-                                        <select id="studentsList2" name="studentId2" class="form-control inline">
-                                            <option value="-1">选择学生</option>
-                                        </select>
-                                    </div>
-                                </div>
+<%--                                <div class="form-group">--%>
+<%--                                    <label class="col-sm-4 control-label">请选择查重方式:</label>--%>
+<%--                                    <div class="col-sm-6">--%>
+<%--                                        <label class="radio-inline">--%>
+<%--                                            <input type="radio" name="checkType" value="all2all"/>全对全查重--%>
+<%--                                        </label>--%>
+<%--                                        <label class="radio-inline">--%>
+<%--                                            <input type="radio" name="checkType" value="one2all"/>一对全查重--%>
+<%--                                        </label>--%>
+<%--                                        <label class="radio-inline">--%>
+<%--                                            <input type="radio" name="checkType" value="one2one" checked="checked"/>一对一查重--%>
+<%--                                        </label>--%>
+<%--                                    </div>--%>
+<%--                                </div>--%>
+
+<%--                                <div class="form-group">--%>
+<%--                                    <label class="col-sm-4 control-label">请选择第一位待查重学生:</label>--%>
+<%--                                    <div class="col-sm-6">--%>
+<%--                                        <select id="studentsList1" name="studentId1" class="form-control inline">--%>
+<%--                                            <option value="-1">选择学生</option>--%>
+<%--                                        </select>--%>
+<%--                                    </div>--%>
+<%--                                </div>--%>
+
+<%--                                <div class="form-group">--%>
+<%--                                    <label class="col-sm-4 control-label">请选择第二位待查重学生:</label>--%>
+<%--                                    <div class="col-sm-6">--%>
+<%--                                        <select id="studentsList2" name="studentId2" class="form-control inline">--%>
+<%--                                            <option value="-1">选择学生</option>--%>
+<%--                                        </select>--%>
+<%--                                    </div>--%>
+<%--                                </div>--%>
 
                                 <div class="form-group">
                                     <div class="col-sm-8 col-sm-offset-4">

@@ -219,6 +219,19 @@ public class TeacherServlet extends HttpServlet {
 			}
 			out.println(jsonArray);
 		}
+		else if("getCourseSection".equals(method)) {
+			System.out.println("< Teacher Get Course Section >");
+			String teacherid = request.getParameter("teacherid");
+			String courseid = request.getParameter("courseid");
+
+			try{
+				jsonArray = TeacherDAO.getCourseSection(teacherid, courseid);
+			}catch(SQLException|JSONException e) {
+				e.printStackTrace();
+			}
+			out.println(jsonArray);
+
+		}
 		out.close();
 	}
 }

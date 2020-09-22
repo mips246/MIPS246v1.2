@@ -190,4 +190,25 @@ public class TeacherDAO extends BaseDAO{
 		closeConnect();
 		return resultlist;
 	}
+
+    public static JSONArray getCourseSection(String teacherid, String courseid) throws SQLException, JSONException {
+        JSONArray resultlist = new JSONArray();
+        String sql = "SELECT course_section"
+                + " FROM file"
+                + " where teacherid = ? and courseid = ? and studentid is null and file_type = 0;";
+        openConnection();
+        pstmt = getPStatement(sql);
+
+        pstmt.setString(1, teacherid);
+        pstmt.setString(2, courseid);
+        ResultSet result = pstmt.executeQuery();
+        while(result.next()){
+            JSONObject obj= new JSONObject ();
+            obj.put("section", result.getInt("course_section"));
+            resultlist.put(obj);
+        }
+        result.close();
+        closeConnect();
+        return resultlist;
+    }
 }
