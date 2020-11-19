@@ -1,14 +1,17 @@
 package servlet;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.sql.SQLException;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,6 +19,7 @@ import org.json.JSONObject;
 import dao.AdminDAO;
 import dao.FileDAO;
 import dao.TeacherDAO;
+import utils.CheckSameUtils;
 import vo.MyFile;
 
 public class TeacherServlet extends HttpServlet {
@@ -231,6 +235,71 @@ public class TeacherServlet extends HttpServlet {
 			}
 			out.println(jsonArray);
 
+		}else if("checkSame".equals(method)){
+			System.out.println("进入查重模块");
+			String courseId=request.getParameter("courseId");
+			String courseSection=request.getParameter("courseSection");
+			String teacherId=request.getParameter("tearcherid");
+			Thread t=new Thread(new Runnable() {
+				@Override
+				public void run() {
+					TreeMap<String, List<String>> map=new TreeMap<>();
+					try {
+						String path=System.getProperty("user.dir")+File.separator+"WebRoot"+File.separator+courseId+File.separator+teacherId+File.separator;
+						File f=new File(path+"CheckSame.xls");
+						FileOutputStream os=null;
+						map=TeacherDAO.getHomeworkPath(courseId,courseSection);
+						try {
+							os=new FileOutputStream(f);
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+						}
+						//创建excel表对象
+						HSSFWorkbook wholeFile=new HSSFWorkbook();
+						//创建这个excel表内的sheet
+						HSSFSheet result = wholeFile.createSheet("result");
+						List<String> list=new ArrayList<>();
+						Map<String,Integer> studentIndex=new HashMap<>();
+						for(int i=0;i<list.size();i++){
+							studentIndex.put(list.get(i),i+1);
+						}
+						List<String> studentList=new ArrayList<>(map.keySet());
+						Map<String, HSSFRow> studentIdToHSSFRow = CheckSameUtils.initXlsFile(studentList, f,wholeFile,result,os);
+						for(String stId1:map.keySet()){
+							for(String stId2:map.keySet()){
+								if(stId1.compareTo(stId2)>0){
+									List<String> list1=map.get(stId1);
+									List<String> list2=map.get(stId2);
+									double v = CheckSameUtils.calRepeatRate(list1, list2, 1);
+									if(v>1) v=1;
+									studentIdToHSSFRow.get(stId1).createCell(studentIndex.get(stId2)).setCellValue(v);
+								}
+							}
+						}
+						try {
+							wholeFile.write(os);
+							os.flush();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						try {
+							os.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+					} catch (SQLException throwables) {
+						throwables.printStackTrace();
+					}
+				}
+			});
+			t.start();
+			try {
+				jsonArray.put(0,"true");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			out.println(jsonArray);
 		}
 		out.close();
 	}

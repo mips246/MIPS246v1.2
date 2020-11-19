@@ -19,8 +19,7 @@ import dao.AdminDAO;
 public class AdminTeacherServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	
-	public AdminTeacherServlet() {
+		public AdminTeacherServlet() {
 		super();
 	}
 
@@ -43,6 +42,7 @@ public class AdminTeacherServlet extends HttpServlet {
 		JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
 		String method = request.getParameter("method");
+		System.out.println("fuck off£¬ÄáÂê±Ò");
 		
 		if("deleteTeacher".equals(method)) {
 			System.out.println("< Addmin Delete Teacher >");
@@ -109,7 +109,7 @@ public class AdminTeacherServlet extends HttpServlet {
 		}
 		
 		else if("selectAllTeacher".equals(method)) {
-			System.out.println("< Addmin Select All Teacher >");
+			System.out.println("< Addmin Select All Teacher Listhehehe >");
 			
 			try {
         		jsonArray = AdminDAO.getTeacherList();

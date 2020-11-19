@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
-  <artifact type="exploded-war" name="MIPS246v2:Web exploded">
-    <output-path>$PROJECT_DIR$/out/artifacts/MIPS246v2_Web_exploded</output-path>
+  <artifact type="exploded-war" build-on-make="true" name="MIPS246v2:Web exploded">
+    <output-path>D:/software/apache-tomcat-9.0.21/apache-tomcat-9.0.21/webapps/MIPS246v2_Web_exploded</output-path>
     <root id="root">
       <element id="javaee-facet-resources" facet="MIPS246v2/web/Web" />
       <element id="directory" name="WEB-INF">
@@ -9,6 +9,7 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="lib" />
+          <element id="library" level="project" name="servlet-api" />
         </element>
       </element>
     </root>
