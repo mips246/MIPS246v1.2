@@ -112,6 +112,26 @@
         </script>
 
         <script type="text/javascript">
+            function doCheck(teacherId,courseId,courseSection){
+                $.ajax({
+                    url:"/MIPS246/TeacherServlet",
+                    type:"POST",
+                    data:{
+                        method:"checkSame",
+                        teacherId:teacherId,
+                        courseId:courseId,
+                        courseSection:courseSection
+                    },
+                    dataType:"json",
+                    success:function(data){
+                        if(data[0] == "true") alert("请稍后在文件管理系统中查看查重结果");
+                        else alert("查重失败");
+                    }
+                });
+            }
+        </script>
+
+        <script type="text/javascript">
             function dealStudentData(data){
                 $("#studentsList1").html("");
                 $("#studentsList2").html("");
@@ -177,6 +197,7 @@
                     // else{
                     //     alert("here!")
                     // }
+                    doCheck(teacherid, courseId, courseSection);
                 });
             });
         </script>

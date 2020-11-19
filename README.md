@@ -8,6 +8,7 @@ file表中file_type表示文件类型，规定如下：
 	1 -> 视频
 	2 -> 报告
 	3 -> 讲义
+	4 -> 查重报告
 	
 目前teacher部分存在的问题
 	1.teacher_submit_grade.jsp的ajax仅对success做了处理，没有error的处理

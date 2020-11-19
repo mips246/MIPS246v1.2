@@ -70,6 +70,7 @@
                 if(filetype==0) type = "作业要求";
                 else if(filetype==1) type = "课程视频";
                 else if(filetype==3) type = "课程讲义";
+                else if(filetype==4) type = "查重结果";
 
                 tt = "<tr>"
                     + "<td class='text-center'><a href=\'" + fileurl + "\' download=\'" + filename + "\'>" + filename + "</a></td>"

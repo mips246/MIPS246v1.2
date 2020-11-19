@@ -36,7 +36,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      		var courseid = getUrlParams("courseid");
      		var section = getUrlParams("section");
      		var userid = getUrlParams("userid");
-     		document.homework.section.value = section;
+     		document.homework.coursesection.value = section;
      		document.homework.courseid.value = courseid;
      		document.homework.userid.value = userid;
 		}
@@ -47,7 +47,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <body onload="writeData()">
     <form name="homework" method="post" action="/MIPS246/UploadServlet" enctype="multipart/form-data">
 					<%-- 一定要把文件 放到最后，这样传到后台的数据也会将文件放到最后 --%>
-					<input type="hidden" name="section" value="">
+					<input type="hidden" name="coursesection" value="">
     				<input type="hidden" name="filetype" value="0"/>
     				<input type="hidden" name="roletype" value="student"/>
     				<input type="hidden" name="courseid" value=""/>

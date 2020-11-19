@@ -214,6 +214,7 @@ public class TeacherDAO extends BaseDAO{
     public static TreeMap<String,List<String>> getHomeworkPath(String courseId, String courseSection) throws SQLException {
 		TreeMap<String,List<String>> map=new TreeMap<>();
 		int section=Integer.parseInt(courseSection);
+		System.out.println("courseid: "+courseId+" courseSection:" + courseSection);
 		String sql="select * from file where courseid = ? and course_section = ? and teacherid is null and file_type = 0";
 		openConnection();
 		pstmt=getPStatement(sql);
@@ -223,9 +224,10 @@ public class TeacherDAO extends BaseDAO{
 
 		String outPath=System.getProperty("user.dir");
 		while(result.next()){
-			String file_url = result.getString(outPath+"file_url");
+			String file_url = result.getString("file_url");
 			String studentId=result.getString("studentid");
-			CheckSameUtils.readFile(map,studentId,file_url);
+			System.out.println("fileurl:" + file_url + " studentId:" + studentId);
+			CheckSameUtils.readFile(map,studentId,outPath+file_url);
 		}
 		result.close();
 		closeConnect();

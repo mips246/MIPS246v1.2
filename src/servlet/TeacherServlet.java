@@ -235,18 +235,39 @@ public class TeacherServlet extends HttpServlet {
 			}
 			out.println(jsonArray);
 
-		}else if("checkSame".equals(method)){
-			System.out.println("进入查重模块");
+		}
+		else if("checkSame".equals(method)){
+			System.out.println("< 进入查重模块 >");
+			MyFile myfile = new MyFile();
+
 			String courseId=request.getParameter("courseId");
 			String courseSection=request.getParameter("courseSection");
-			String teacherId=request.getParameter("tearcherid");
+			String teacherId=request.getParameter("teacherId");
+
+			myfile.setFileurl(File.separator + "WebRoot" + File.separator + courseId + File.separator + teacherId + File.separator + "CheckSame.xls");
+			myfile.setStudentid(null);
+			myfile.setCourseid(courseId);
+			myfile.setTeacherid(teacherId);
+			myfile.setFiletype(4);
+			myfile.setCoursesection(Integer.parseInt(courseSection));
+
+
 			Thread t=new Thread(new Runnable() {
 				@Override
 				public void run() {
 					TreeMap<String, List<String>> map=new TreeMap<>();
 					try {
 						String path=System.getProperty("user.dir")+File.separator+"WebRoot"+File.separator+courseId+File.separator+teacherId+File.separator;
+						System.out.println(path);
 						File f=new File(path+"CheckSame.xls");
+
+						Date time = new Date(f.lastModified());
+						java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+						String filetime = df.format(time);
+						myfile.setCreatetime(filetime);
+						myfile.setFilename("CheckSame.xls");
+						FileDAO.insert(myfile);
+
 						FileOutputStream os=null;
 						map=TeacherDAO.getHomeworkPath(courseId,courseSection);
 						try {
@@ -258,7 +279,7 @@ public class TeacherServlet extends HttpServlet {
 						HSSFWorkbook wholeFile=new HSSFWorkbook();
 						//创建这个excel表内的sheet
 						HSSFSheet result = wholeFile.createSheet("result");
-						List<String> list=new ArrayList<>();
+						List<String> list=new ArrayList<>(map.keySet());
 						Map<String,Integer> studentIndex=new HashMap<>();
 						for(int i=0;i<list.size();i++){
 							studentIndex.put(list.get(i),i+1);
