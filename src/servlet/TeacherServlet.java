@@ -261,7 +261,7 @@ public class TeacherServlet extends HttpServlet {
 						System.out.println(path);
 						File f=new File(path+"CheckSame.xls");
 
-						Date time = new Date(f.lastModified());
+						Date time = new Date();
 						java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 						String filetime = df.format(time);
 						myfile.setCreatetime(filetime);
