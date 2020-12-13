@@ -8,6 +8,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -117,6 +118,27 @@ public class CheckSameUtils {
         }
         map.put(studentId,list);
     }
+    //多线程环境下读取所有文件夹内所有文件
+    public static void readFile2(ConcurrentHashMap<String,List<String>> map, String studentId, String path){
+        //List<String> list=new ArrayList<>();
+        File f=new File(path);
+        List<String> fileList=new ArrayList<>();
+        dfs(path,fileList);
+//        Scanner sc= null;
+//        try {
+//            sc = new Scanner(f);
+//        } catch (FileNotFoundException e) {
+//            System.out.println("文件不存在: "+path);
+//            e.printStackTrace();
+//        }
+//        while(sc.hasNextLine()){
+//            String s = sc.nextLine();
+//            String finalString=processString(s);
+//            if(finalString.length()==0||(finalString.length()==2&&finalString.equals(");"))) continue;
+//            list.add(finalString);
+//        }
+        map.put(studentId,fileList);
+    }
     //处理字符串的方法，去掉空格和String
     public static String processString(String s){
         if(s.equals("    ")||s.equals("endmodule")) return "";
@@ -138,7 +160,7 @@ public class CheckSameUtils {
         if(!pathFile.exists()){
             pathFile.mkdirs();
         }
-        ZipFile zip=new ZipFile(zipFile, Charset.forName("GBK"));
+        ZipFile zip=new ZipFile(zipFile, Charset.forName("UTF-8"));
         for (Enumeration entries = zip.entries(); entries.hasMoreElements();) {
             ZipEntry entry = (ZipEntry) entries.nextElement();
             String zipEntryName = entry.getName();
@@ -177,6 +199,33 @@ public class CheckSameUtils {
             map.put(list.get(i-1),row1);
         }
         return map;
-
+    }
+    /**
+     * dfs查询一个文件夹内部的所有内容，将他们放在List<String>中
+     */
+    public static void dfs(String dest,List<String> fileList){
+        File ff=new File(dest);
+        String[] list = ff.list();
+        for(String s:list){
+            String path=dest+"\\"+s;
+            File f=new File(path);
+            if(f.isDirectory()){
+                dfs(path,fileList);
+            }else if(s.substring(s.length()-2,s.length()).equals(".v")){
+                Scanner sc= null;
+                try {
+                    sc = new Scanner(f);
+                } catch (FileNotFoundException e) {
+                    System.out.println("文件不存在: "+path);
+                    e.printStackTrace();
+                }
+                while(sc.hasNextLine()){
+                    String ss = sc.nextLine();
+                    String finalString=processString(ss);
+                    if(finalString.length()==0||(finalString.length()==2&&finalString.equals(");"))) continue;
+                    fileList.add(finalString);
+                }
+            }
+        }
     }
 }

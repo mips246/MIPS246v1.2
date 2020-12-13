@@ -1,8 +1,12 @@
 package servlet;
 
 import java.io.*;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -251,11 +255,28 @@ public class TeacherServlet extends HttpServlet {
 			myfile.setFiletype(4);
 			myfile.setCoursesection(Integer.parseInt(courseSection));
 
-
-			Thread t=new Thread(new Runnable() {
+			/**
+			 * 这一段代码的逻辑是这样的：需要用多线程解压学生文件，返回的concurrentHashMap是一个
+			 * 学生id——>解压后的文件内容List<String>的映射
+			 */
+			ConcurrentHashMap<String,List<String>> concurrentHashMap=new ConcurrentHashMap<>();
+			Map<String,String> studentIdToFilePath=null;
+			try {
+				studentIdToFilePath=TeacherDAO.getHomeworkPath(courseId,courseSection);
+			} catch (SQLException throwables) {
+				throwables.printStackTrace();
+			}
+			ExecutorService executorService=Executors.newFixedThreadPool(10);
+			for(String stId:studentIdToFilePath.keySet()){
+				UnzipRunnableTask task=new UnzipRunnableTask(stId,studentIdToFilePath.get(stId),concurrentHashMap);
+				executorService.execute(task);
+			}
+			executorService.shutdown();
+			while(!executorService.isTerminated()){
+			}
+			Thread tt=new Thread(new Runnable() {
 				@Override
 				public void run() {
-					TreeMap<String, List<String>> map=new TreeMap<>();
 					try {
 						String path=System.getProperty("user.dir")+File.separator+"WebRoot"+File.separator+courseId+File.separator+teacherId+File.separator;
 						System.out.println(path);
@@ -269,7 +290,6 @@ public class TeacherServlet extends HttpServlet {
 						FileDAO.insert(myfile);
 
 						FileOutputStream os=null;
-						map=TeacherDAO.getHomeworkPath(courseId,courseSection);
 						try {
 							os=new FileOutputStream(f);
 						} catch (FileNotFoundException e) {
@@ -279,18 +299,18 @@ public class TeacherServlet extends HttpServlet {
 						HSSFWorkbook wholeFile=new HSSFWorkbook();
 						//创建这个excel表内的sheet
 						HSSFSheet result = wholeFile.createSheet("result");
-						List<String> list=new ArrayList<>(map.keySet());
+						List<String> list=new ArrayList<>(concurrentHashMap.keySet());
 						Map<String,Integer> studentIndex=new HashMap<>();
 						for(int i=0;i<list.size();i++){
 							studentIndex.put(list.get(i),i+1);
 						}
-						List<String> studentList=new ArrayList<>(map.keySet());
+						List<String> studentList=new ArrayList<>(concurrentHashMap.keySet());
 						Map<String, HSSFRow> studentIdToHSSFRow = CheckSameUtils.initXlsFile(studentList, f,wholeFile,result,os);
-						for(String stId1:map.keySet()){
-							for(String stId2:map.keySet()){
+						for(String stId1:concurrentHashMap.keySet()){
+							for(String stId2:concurrentHashMap.keySet()){
 								if(stId1.compareTo(stId2)>0){
-									List<String> list1=map.get(stId1);
-									List<String> list2=map.get(stId2);
+									List<String> list1=concurrentHashMap.get(stId1);
+									List<String> list2=concurrentHashMap.get(stId2);
 									double v = CheckSameUtils.calRepeatRate(list1, list2, 1);
 									if(v>1) v=1;
 									studentIdToHSSFRow.get(stId1).createCell(studentIndex.get(stId2)).setCellValue(v);
@@ -309,12 +329,77 @@ public class TeacherServlet extends HttpServlet {
 							e.printStackTrace();
 						}
 
-					} catch (SQLException throwables) {
-						throwables.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 			});
-			t.start();
+			tt.start();
+//			Thread t=new Thread(new Runnable() {
+//				@Override
+//				public void run() {
+//					TreeMap<String, List<String>> map;
+//
+//					try {
+//						String path=System.getProperty("user.dir")+File.separator+"WebRoot"+File.separator+courseId+File.separator+teacherId+File.separator;
+//						System.out.println(path);
+//						File f=new File(path+"CheckSame.xls");
+//
+//						Date time = new Date();
+//						java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+//						String filetime = df.format(time);
+//						myfile.setCreatetime(filetime);
+//						myfile.setFilename("CheckSame.xls");
+//						FileDAO.insert(myfile);
+//
+//						FileOutputStream os=null;
+//						//获取学生id和文件内容的键值映射。
+//						map=TeacherDAO.getHomeworkPathAndFileName(courseId,courseSection);
+//						try {
+//							os=new FileOutputStream(f);
+//						} catch (FileNotFoundException e) {
+//							e.printStackTrace();
+//						}
+//						//创建excel表对象
+//						HSSFWorkbook wholeFile=new HSSFWorkbook();
+//						//创建这个excel表内的sheet
+//						HSSFSheet result = wholeFile.createSheet("result");
+//						List<String> list=new ArrayList<>(map.keySet());
+//						Map<String,Integer> studentIndex=new HashMap<>();
+//						for(int i=0;i<list.size();i++){
+//							studentIndex.put(list.get(i),i+1);
+//						}
+//						List<String> studentList=new ArrayList<>(map.keySet());
+//						Map<String, HSSFRow> studentIdToHSSFRow = CheckSameUtils.initXlsFile(studentList, f,wholeFile,result,os);
+//						for(String stId1:map.keySet()){
+//							for(String stId2:map.keySet()){
+//								if(stId1.compareTo(stId2)>0){
+//									List<String> list1=map.get(stId1);
+//									List<String> list2=map.get(stId2);
+//									double v = CheckSameUtils.calRepeatRate(list1, list2, 1);
+//									if(v>1) v=1;
+//									studentIdToHSSFRow.get(stId1).createCell(studentIndex.get(stId2)).setCellValue(v);
+//								}
+//							}
+//						}
+//						try {
+//							wholeFile.write(os);
+//							os.flush();
+//						} catch (IOException e) {
+//							e.printStackTrace();
+//						}
+//						try {
+//							os.close();
+//						} catch (IOException e) {
+//							e.printStackTrace();
+//						}
+//
+//					} catch (SQLException throwables) {
+//						throwables.printStackTrace();
+//					}
+//				}
+//			});
+//			t.start();
 			try {
 				jsonArray.put(0,"true");
 			} catch (JSONException e) {
@@ -324,4 +409,25 @@ public class TeacherServlet extends HttpServlet {
 		}
 		out.close();
 	}
+	static class UnzipRunnableTask implements Runnable{
+		private String id;
+		private String path;
+		private ConcurrentHashMap<String,List<String>> map;
+		public UnzipRunnableTask(String id,String path, ConcurrentHashMap<String,List<String>> map){
+			this.id=id;
+			this.path=path;
+			this.map=map;
+		}
+		@Override
+		public void run() {
+			String dest="";
+			try {
+				CheckSameUtils.unZipFile(path,dest);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			CheckSameUtils.readFile2(map,id,dest);
+		}
+	}
 }
+

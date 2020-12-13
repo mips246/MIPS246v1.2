@@ -3,6 +3,7 @@ package dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -211,7 +212,7 @@ public class TeacherDAO extends BaseDAO{
         closeConnect();
         return resultlist;
     }
-    public static TreeMap<String,List<String>> getHomeworkPath(String courseId, String courseSection) throws SQLException {
+    public static TreeMap<String,List<String>> getHomeworkPathAndFileName(String courseId, String courseSection) throws SQLException {
 		TreeMap<String,List<String>> map=new TreeMap<>();
 		int section=Integer.parseInt(courseSection);
 		System.out.println("courseid: "+courseId+" courseSection:" + courseSection);
@@ -228,6 +229,29 @@ public class TeacherDAO extends BaseDAO{
 			String studentId=result.getString("studentid");
 			System.out.println("fileurl:" + file_url + " studentId:" + studentId);
 			CheckSameUtils.readFile(map,studentId,outPath+file_url);
+		}
+		result.close();
+		closeConnect();
+		return map;
+	}
+	//返回学生id和作业路径的map
+	public static Map<String,String> getHomeworkPath(String courseId, String courseSection) throws SQLException {
+		Map<String,String> map=new ConcurrentHashMap<>();
+		int section=Integer.parseInt(courseSection);
+		System.out.println("courseid: "+courseId+" courseSection:" + courseSection);
+		String sql="select * from file where courseid = ? and course_section = ? and teacherid is null and file_type = 0";
+		openConnection();
+		pstmt=getPStatement(sql);
+		pstmt.setString(1,courseId);
+		pstmt.setInt(2,section);
+		ResultSet result=pstmt.executeQuery();
+
+		String outPath=System.getProperty("user.dir");
+		while(result.next()){
+			String file_url = result.getString("file_url");
+			String studentId=result.getString("studentid");
+			System.out.println("fileurl:" + file_url + " studentId:" + studentId);
+			map.put(studentId,file_url);
 		}
 		result.close();
 		closeConnect();
