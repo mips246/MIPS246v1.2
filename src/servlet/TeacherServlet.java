@@ -420,13 +420,21 @@ public class TeacherServlet extends HttpServlet {
 		}
 		@Override
 		public void run() {
-			String dest="";
+			int i=path.length()-1;
+			for(;i>=0;i--){
+				if(path.charAt(i)=='\\'){
+					break;
+				}
+			}
+			String dest=path.substring(0,i+1)+"temp";
 			try {
 				CheckSameUtils.unZipFile(path,dest);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			CheckSameUtils.readFile2(map,id,dest);
+			File f=new File(dest);
+			f.delete();
 		}
 	}
 }

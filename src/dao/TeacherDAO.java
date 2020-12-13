@@ -251,7 +251,7 @@ public class TeacherDAO extends BaseDAO{
 			String file_url = result.getString("file_url");
 			String studentId=result.getString("studentid");
 			System.out.println("fileurl:" + file_url + " studentId:" + studentId);
-			map.put(studentId,file_url);
+			map.put(studentId,outPath+file_url);
 		}
 		result.close();
 		closeConnect();
