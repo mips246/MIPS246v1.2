@@ -305,12 +305,13 @@ public class TeacherServlet extends HttpServlet {
 							studentIndex.put(list.get(i),i+1);
 						}
 						List<String> studentList=new ArrayList<>(concurrentHashMap.keySet());
+						TreeMap<String,List<String>> treeMap=new TreeMap<>(concurrentHashMap);
 						Map<String, HSSFRow> studentIdToHSSFRow = CheckSameUtils.initXlsFile(studentList, f,wholeFile,result,os);
-						for(String stId1:concurrentHashMap.keySet()){
-							for(String stId2:concurrentHashMap.keySet()){
+						for(String stId1:treeMap.keySet()){
+							for(String stId2:treeMap.keySet()){
 								if(stId1.compareTo(stId2)>0){
-									List<String> list1=concurrentHashMap.get(stId1);
-									List<String> list2=concurrentHashMap.get(stId2);
+									List<String> list1=treeMap.get(stId1);
+									List<String> list2=treeMap.get(stId2);
 									double v = CheckSameUtils.calRepeatRate(list1, list2, 1);
 									if(v>1) v=1;
 									studentIdToHSSFRow.get(stId1).createCell(studentIndex.get(stId2)).setCellValue(v);
@@ -433,8 +434,8 @@ public class TeacherServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 			CheckSameUtils.readFile2(map,id,dest);
-			File f=new File(dest);
-			f.delete();
+//			File f=new File(dest);
+//			f.delete();
 		}
 	}
 }

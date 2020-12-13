@@ -84,6 +84,7 @@ public class CheckSameUtils {
     }
 
     public static double calRepeatRate(List<String> code1,List<String> code2,int choice){
+        if(code1.size()==0||code2.size()==0) return 0;
         int countAll=0,countRepeat=0;
         for(int i=0;i<code1.size();i++){
             countAll+=code1.get(i).length();
@@ -202,6 +203,7 @@ public class CheckSameUtils {
             InputStream in = zip.getInputStream(entry);
             String outPath = (descDir + File.separator + zipEntryName).replaceAll("\\*", "/");
             // 判断路径是否存在,不存在则创建文件路径
+            System.out.println(outPath);
             File file = new File(outPath.substring(0, outPath.lastIndexOf('/')));
             if (!file.exists()) {
                 file.mkdirs();
