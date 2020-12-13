@@ -1,5 +1,8 @@
 package utils;
 
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -150,8 +153,40 @@ public class CheckSameUtils {
         }
         return newS;
     }
+    private static ZipArchiveInputStream getZipFile(File zipFile) throws Exception {
+        return new ZipArchiveInputStream(new BufferedInputStream(new FileInputStream(zipFile)));
+    }
 
-    public static void unZipFile(String zipPath,String descDir)throws IOException{
+    public static void unZipFile(String src, String descDir) throws IOException {
+        File zipFile=new File(src);
+        try (ZipArchiveInputStream inputStream = getZipFile(zipFile)) {
+            File pathFile = new File(descDir);
+            if (!pathFile.exists()) {
+                pathFile.mkdirs();
+            }
+            ZipArchiveEntry entry = null;
+            while ((entry = inputStream.getNextZipEntry()) != null) {
+                if (entry.isDirectory()) {
+                    File directory = new File(descDir, entry.getName());
+                    directory.mkdirs();
+                } else {
+                    OutputStream os = null;
+                    try {
+                        os = new BufferedOutputStream(new FileOutputStream(new File(descDir, entry.getName())));
+                        //输出文件路径信息
+                        //LOG.info("解压文件的当前路径为:{}", descDir + entry.getName());
+                        IOUtils.copy(inputStream, os);
+                    } finally {
+                        IOUtils.closeQuietly(os);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            //LOG.error("[unzip] 解压zip文件出错", e);
+        }
+    }
+    public static void unZipFileOld(String zipPath,String descDir)throws IOException{
         File zipFile=new File(zipPath);
         if(!zipFile.exists()){
             throw new IOException("需解压文件不存在");
@@ -160,7 +195,7 @@ public class CheckSameUtils {
         if(!pathFile.exists()){
             pathFile.mkdirs();
         }
-        ZipFile zip=new ZipFile(zipFile, Charset.forName("UTF-8"));
+        ZipFile zip=new ZipFile(zipFile, Charset.forName("GBK"));
         for (Enumeration entries = zip.entries(); entries.hasMoreElements();) {
             ZipEntry entry = (ZipEntry) entries.nextElement();
             String zipEntryName = entry.getName();
