@@ -249,7 +249,7 @@ public class TeacherServlet extends HttpServlet {
 			String courseSection=request.getParameter("courseSection");
 			String teacherId=request.getParameter("teacherId");
 
-			myfile.setFileurl(File.separator + "WebRoot" + File.separator + courseId + File.separator + teacherId + File.separator + "CheckSame.xls");
+			myfile.setFileurl(File.separator + "WebRoot" + File.separator + courseId + File.separator + teacherId + File.separator + "CheckSame.txt");
 			myfile.setStudentid(null);
 			myfile.setCourseid(courseId);
 			myfile.setTeacherid(teacherId);
@@ -281,13 +281,13 @@ public class TeacherServlet extends HttpServlet {
 					try {
 						String path=System.getProperty("user.dir")+File.separator+"WebRoot"+File.separator+courseId+File.separator+teacherId+File.separator;
 						System.out.println(path);
-						File f=new File(path+"CheckSame.xls");
+						File f=new File(path+"CheckSame.txt");
 
 						Date time = new Date();
 						java.text.SimpleDateFormat df = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 						String filetime = df.format(time);
 						myfile.setCreatetime(filetime);
-						myfile.setFilename("CheckSame.xls");
+						myfile.setFilename("CheckSame.txt");
 						FileDAO.insert(myfile);
 
 						FileOutputStream os=null;
@@ -297,9 +297,9 @@ public class TeacherServlet extends HttpServlet {
 							e.printStackTrace();
 						}
 						//创建excel表对象
-						HSSFWorkbook wholeFile=new HSSFWorkbook();
+						//HSSFWorkbook wholeFile=new HSSFWorkbook();
 						//创建这个excel表内的sheet
-						HSSFSheet result = wholeFile.createSheet("result");
+						//HSSFSheet result = wholeFile.createSheet("result");
 						List<String> list=new ArrayList<>(concurrentHashMap.keySet());
 						Map<String,Integer> studentIndex=new HashMap<>();
 						for(int i=0;i<list.size();i++){
@@ -325,8 +325,9 @@ public class TeacherServlet extends HttpServlet {
 								ops.write(s.getBytes("UTF-8"));
 							}
 						}
+						ops.write("\n".getBytes("UTF-8"));
 						//Map<String, HSSFRow> studentIdToHSSFRow = CheckSameUtils.initXlsFile(studentList, f,wholeFile,result,os);
-						DecimalFormat decimalFormat=new DecimalFormat("#.000");
+						DecimalFormat decimalFormat=new DecimalFormat("#0.000");
 						for(String stId1:treeMap.keySet()){
 							String stId1s=stId1+"\t";
 							ops.write(stId1s.getBytes("UTF-8"));
@@ -341,10 +342,11 @@ public class TeacherServlet extends HttpServlet {
 									ops.write(compareAns.getBytes("UTF-8"));
 								}
 							}
+							ops.write("\n".getBytes("UTF-8"));
 						}
 						ops.close();
 						try {
-							wholeFile.write(os);
+							//wholeFile.write(os);
 							os.flush();
 						} catch (IOException e) {
 							e.printStackTrace();
