@@ -304,8 +304,12 @@ public class TeacherServlet extends HttpServlet {
 						for(int i=0;i<list.size();i++){
 							studentIndex.put(list.get(i),i+1);
 						}
-						List<String> studentList=new ArrayList<>(concurrentHashMap.keySet());
-						TreeMap<String,List<String>> treeMap=new TreeMap<>(concurrentHashMap);
+
+						TreeMap<String,List<String>> treeMap=new TreeMap<>();
+						for(String s:concurrentHashMap.keySet()){
+							treeMap.put(s,concurrentHashMap.get(s));
+						}
+						List<String> studentList=new ArrayList<>(treeMap.keySet());
 						Map<String, HSSFRow> studentIdToHSSFRow = CheckSameUtils.initXlsFile(studentList, f,wholeFile,result,os);
 						for(String stId1:treeMap.keySet()){
 							for(String stId2:treeMap.keySet()){
