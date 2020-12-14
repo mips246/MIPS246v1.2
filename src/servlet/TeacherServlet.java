@@ -3,6 +3,7 @@ package servlet;
 import java.io.*;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -310,18 +311,38 @@ public class TeacherServlet extends HttpServlet {
 							treeMap.put(s,concurrentHashMap.get(s));
 						}
 						List<String> studentList=new ArrayList<>(treeMap.keySet());
-						Map<String, HSSFRow> studentIdToHSSFRow = CheckSameUtils.initXlsFile(studentList, f,wholeFile,result,os);
+						File resultTxt=new File(path+"CheckSame.txt");
+
+						resultTxt.createNewFile();
+
+						FileOutputStream ops=null;
+						ops=new FileOutputStream(resultTxt);
+						for(int i=0;i<studentList.size()+1;i++){
+							if(i==0){
+								ops.write("²éÖØ+\t".getBytes("utf-8"));
+							}else{
+								String s=studentList.get(i-1)+"\t";
+								ops.write(s.getBytes("UTF-8"));
+							}
+						}
+						//Map<String, HSSFRow> studentIdToHSSFRow = CheckSameUtils.initXlsFile(studentList, f,wholeFile,result,os);
+						DecimalFormat decimalFormat=new DecimalFormat("#.000");
 						for(String stId1:treeMap.keySet()){
+							String stId1s=stId1+"\t";
+							ops.write(stId1s.getBytes("UTF-8"));
 							for(String stId2:treeMap.keySet()){
 								if(stId1.compareTo(stId2)>0){
 									List<String> list1=treeMap.get(stId1);
 									List<String> list2=treeMap.get(stId2);
 									double v = CheckSameUtils.calRepeatRate(list1, list2, 1);
 									if(v>1) v=1;
-									studentIdToHSSFRow.get(stId1).createCell(studentIndex.get(stId2)).setCellValue(v);
+									//studentIdToHSSFRow.get(stId1).createCell(studentIndex.get(stId2)).setCellValue(v);
+									String compareAns=decimalFormat.format(v)+"\t";
+									ops.write(compareAns.getBytes("UTF-8"));
 								}
 							}
 						}
+						ops.close();
 						try {
 							wholeFile.write(os);
 							os.flush();

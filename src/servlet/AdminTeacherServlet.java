@@ -42,7 +42,7 @@ public class AdminTeacherServlet extends HttpServlet {
 		JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
 		String method = request.getParameter("method");
-		System.out.println("fuck off£¬ÄáÂê±Ò");
+		//System.out.println("fuck off£¬ÄáÂê±Ò");
 		
 		if("deleteTeacher".equals(method)) {
 			System.out.println("< Addmin Delete Teacher >");
