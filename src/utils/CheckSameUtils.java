@@ -243,6 +243,7 @@ public class CheckSameUtils {
     public static void dfs(String dest,List<String> fileList){
         File ff=new File(dest);
         String[] list = ff.list();
+        if(list==null||list.length==0) return;
         for(String s:list){
             String path=dest+"\\"+s;
             File f=new File(path);
