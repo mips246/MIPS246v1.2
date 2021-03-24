@@ -335,7 +335,7 @@ public class TeacherServlet extends HttpServlet {
 								if(stId1.compareTo(stId2)>0){
 									List<String> list1=treeMap.get(stId1);
 									List<String> list2=treeMap.get(stId2);
-									double v = CheckSameUtils.calRepeatRate(list1, list2, 1);
+									double v = CheckSameUtils.calRepeatRate(list1, list2, 2);
 									if(v>1) v=1;
 									//studentIdToHSSFRow.get(stId1).createCell(studentIndex.get(stId2)).setCellValue(v);
 									String compareAns=decimalFormat.format(v)+"\t";
