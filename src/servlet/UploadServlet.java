@@ -72,7 +72,13 @@ public class UploadServlet extends HttpServlet {
         //String uploadPath = "E:\\Myeclipse_program\\MIPS246\\WebRoot\\homework\\数字逻辑";
         //System.out.println(uploadPath);
         //String outerpath = "E:\\Myeclipse_program\\MIPS246\\WebRoot";
+
+        /*
+        本地使用
         String 	outerpath	  = System.getProperty("user.dir") + File.separator + "WebRoot";	//最外层文件夹
+        */
+        /*服務器使用*/
+        String 	outerpath	  = System.getProperty("user.dir") + File.separator + "webapps" + File.separator + "MIPS246" + File.separator + "WebRoot";
         
         /*
          * 错误的写法，无法直接用getParameter取得前端数据

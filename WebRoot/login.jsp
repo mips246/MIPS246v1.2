@@ -8,7 +8,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <head>
 	<base href="<%=basePath%>">
 	<meta charset="UTF-8">
-	<title>同济大学计算机系统设计实验平台</title>
+	<title>大学计算机实践能力教学体会</title>
 	<link rel="stylesheet" href="https://cdn.bootcss.com/normalize/8.0.1/normalize.css">
 	<link rel="stylesheet" href="css/main.css">
   	<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
@@ -72,7 +72,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			<div>
                 <h1 class="logo-name">MIPS246</h1>
             </div>
-            <h3>同济大学计算机系统设计实验平台</h3>
+            <h1><b>大学计算机实践能力教学体会</b></h1>
 			<form action='LoginServletNew' method='post' onsubmit="return validate(this)">
 				<div class="middle-box">
 			

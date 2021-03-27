@@ -46,7 +46,10 @@ public class DeleteFileServlet extends HttpServlet {
             System.out.println("< Teacher Delete File >");
             int fileno = Integer.parseInt(request.getParameter("fileno"));
             String fileurl = request.getParameter("fileurl");
+            /*本地使用
             String filepath = System.getProperty("user.dir") + URLDecoder.decode(fileurl,"UTF-8");
+            */
+            String 	filepath = System.getProperty("user.dir") + File.separator + "webapps" + URLDecoder.decode(fileurl,"UTF-8");
             File deleteFile = new File(filepath);
             boolean delret = false;
             boolean dbret = false;
